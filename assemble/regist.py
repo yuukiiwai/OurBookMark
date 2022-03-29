@@ -13,7 +13,9 @@ def selecter(url,userid):
     and assemble_url.url = '{url}'
     '''
     print(com)
-    existUR = cursor.execute(com)
+    cursor.execute(com)
+    rows = cursor.fetchall()
+    existUR = len(rows)
     print("existUR=")
     print(existUR)
     if existUR != 0: #registerがすでにある
