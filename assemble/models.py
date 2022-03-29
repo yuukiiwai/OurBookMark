@@ -6,7 +6,7 @@ import uuid as uuid_lib
 
 """ 登録 """
 class URL(models.Model):
-    id = models.UUIDField(primary_key=True,verbose_name='id',default=uuid_lib.uuid4,editable=False)
+    id = models.UUIDField(primary_key=True,verbose_name='id',default=uuid_lib.uuid4,editable=False,unique=True)
     url = models.URLField(verbose_name='url',max_length=512,null=False,unique=True)
     title = models.CharField(verbose_name='title',max_length=128,blank=True)
 
@@ -33,14 +33,14 @@ class Regist(models.Model):
 """ 検索 """
 
 class BigTag(models.Model):
-    id = models.UUIDField(primary_key=True,verbose_name='id',default=uuid_lib.uuid4,editable=False)
+    id = models.UUIDField(primary_key=True,verbose_name='id',default=uuid_lib.uuid4,editable=False,unique=True)
     tag = models.CharField(verbose_name='tag',max_length=64,null=False)
     
     def __str__(self):
         return f'{self.tag}'
 
 class FineTag(models.Model):
-    id = models.UUIDField(primary_key=True,verbose_name='id',default=uuid_lib.uuid4,editable=False)
+    id = models.UUIDField(primary_key=True,verbose_name='id',default=uuid_lib.uuid4,editable=False,unique=True)
     tag = models.CharField(verbose_name='tag',max_length=128,null=False)
     parent = models.ForeignKey(
         to=BigTag,
