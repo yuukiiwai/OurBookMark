@@ -142,6 +142,7 @@ def urlSerch(selecter,reqBs,reqFs):
         group by assemble_url.id 
         having count(assemble_url.id)>={paralen}
         '''
+        print(com)
         cursor.execute(com)
         rows = cursor.fetchall()
         for row in rows:
@@ -296,10 +297,10 @@ def whereMake(reqSet,tagkind):
     """
     # where句作成
     paralen = len(reqSet)
-    whstr = "where "
+    whstr = f"where assemble_{tagkind}.tag in("
     for req in reqSet:
-        whstr = whstr+f'assemble_{tagkind}.tag="{req}" OR '
-    whstr = whstr[:-3]
+        whstr = whstr+f'"{req}",'
+    whstr = whstr[:-1]+")"
     # ここまで
 
     info = {
