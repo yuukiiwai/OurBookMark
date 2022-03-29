@@ -248,10 +248,12 @@ def finetagSend(reqBs,sendF):
     for reqb in reqBs:
         reqb_ped = esconv.convert(reqb)
         reqBs_set.add(reqb_ped)
-    whstr = "("
-    for req in reqBs_set:
-        whstr = whstr + f"'{req}',"
-    whstr = whstr[:-1] + ")"
+    whstr = ""
+    if len(reqBs_set) != 0:
+        whstr = "where assemble_bigtag.tag in ("
+        for req in reqBs_set:
+            whstr = whstr + f"'{req}',"
+        whstr = whstr[:-1] + ")"
 
     com = f'''
     select 
@@ -259,7 +261,7 @@ def finetagSend(reqBs,sendF):
     from assemble_finetag 
     join assemble_bigtag 
     on assemble_finetag.parent_id = assemble_bigtag.id 
-    where assemble_bigtag.tag in {whstr}
+    {whstr}
     '''
     #print(com)
     cursor.execute(com)
