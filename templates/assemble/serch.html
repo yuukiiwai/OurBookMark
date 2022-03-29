@@ -10,14 +10,22 @@
 <hr>
 <div id="finetag_table"></div>
 <hr>
-<ul id="url_table">
-    {% for url in urls %}
-        <li>
-            <a href="{{ url.url }}">{{url.title}}</a>
-            <a href="{% url 'assemble:detail' url.id %}">ここの評価ページに飛ぶ</a>
-        </li>
-    {% endfor %}
-</ul>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th scope="col">評価ページ</th>
+            <th scope="col">該当ページ</th>
+        </tr>
+    </thead>
+    <tbody id="url_table">
+        {% for url in urls %}
+        <tr>
+            <th style="width: 10%;" scope="row"><a href="{% url 'assemble:detail' url.id %}">≡・ω・≡</a></th>
+            <th><a href="{{url.url}}">{{url.title}}</a></th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 {% block extrascript %}
 <script>
@@ -103,14 +111,13 @@
             const urls = res['urls'];
             for(let i = 0; i<urls.length;i++){
                 // URL属性付け
-                var newli = document.createElement("li");
-                var newa = document.createElement("a");
-                newa.setAttribute("href",urls[i]["url"]);
-                // newa.setAttribute("url_id",urls[i]["id"]);
-                newa.innerText=urls[i]["title"];
-                newa.setAttribute("target","_blank");
-                newa.setAttribute("rel","noopener noreferrer");
-                newli.appendChild(newa);
+                // tr
+                let newtr = document.createElement("tr");
+                // th detail
+                let detth = document.createElement("th");
+                detth.setAttribute("scope","row");
+                detth.setAttribute("style","width: 10%;");
+                // a detail
                 var newid = document.createElement("a");
                 let eight = urls[i]["id"].slice(0,8);
                 let four1 = urls[i]["id"].slice(8,12);
@@ -119,9 +126,22 @@
                 let last = urls[i]["id"].slice(20);
                 let idrepurl = "{% url 'assemble:detail' furl.id %}".replace(/{{furl.id}}/,(eight+"-"+four1+"-"+four2+"-"+four3+"-"+last));
                 newid.setAttribute("href",idrepurl);
-                newid.innerText="ここの評価ページに飛ぶ";
-                newli.appendChild(newid);
-                urltable.appendChild(newli);
+                newid.innerText="≡・ω・≡";
+                // 親子関係
+                detth.appendChild(newid);
+                newtr.appendChild(detth);
+                // th ->url
+                let urlth = document.createElement("th");
+                // a ->url
+                let newa = document.createElement("a");
+                newa.setAttribute("href",urls[i]["url"]);
+                newa.innerText=urls[i]["title"];
+                newa.setAttribute("target","_blank");
+                newa.setAttribute("rel","noopener noreferrer");
+                // 親子関係
+                urlth.appendChild(newa);
+                newtr.appendChild(urlth);
+                urltable.appendChild(newtr);
             }
             // FineTag更新
             const finetagtable = document.getElementById("finetag_table");
