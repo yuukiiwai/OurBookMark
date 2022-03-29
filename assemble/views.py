@@ -245,7 +245,7 @@ def tagSaveApi(request):
         # add bigtag relation
         for aB in addB:
             com = f'''
-            select id from assemble_bigtag where tag = "{aB}"
+            select id from assemble_bigtag where tag = '{aB}'
             '''
             cursor.execute(com)
             bid = cursor.fetchone()[0]
@@ -254,7 +254,7 @@ def tagSaveApi(request):
         # delete bigtag relation
         for aB in delB:
             com = f'''
-            select id from assemble_bigtag where tag = "{aB}"
+            select id from assemble_bigtag where tag = '{aB}'
             '''
             cursor.execute(com)
             bid = cursor.fetchone()[0]
@@ -267,7 +267,7 @@ def tagSaveApi(request):
             select assemble_finetag.id from assemble_finetag
             join assemble_bigtag
             on assemble_finetag.parent_id = assemble_bigtag.id
-            where assemble_finetag.tag = "{aF['tagname']}" AND assemble_bigtag.tag = "{aF['parent']}" 
+            where assemble_finetag.tag = '{aF["tagname"]}' AND assemble_bigtag.tag = '{aF["parent"]}' 
             '''
             cursor.execute(com)
             fid = cursor.fetchone()[0]
@@ -279,7 +279,7 @@ def tagSaveApi(request):
             select assemble_finetag.id from assemble_finetag
             join assemble_bigtag
             on assemble_finetag.parent_id = assemble_bigtag.id
-            where assemble_finetag.tag = "{aF['tagname']}" AND assemble_bigtag.tag = "{aF['parent']}" 
+            where assemble_finetag.tag = '{aF["tagname"]}' AND assemble_bigtag.tag = '{aF["parent"]}' 
             '''
             cursor.execute(com)
             fid = cursor.fetchone()[0]
