@@ -117,8 +117,10 @@ def urlSerch(selecter,reqBs,reqFs):
         cursor.execute(com)
         rows = cursor.fetchall()
         for row in rows:
+            print(str(row[0]).replace('-',''))
+            idstr = str(row[0]).replace('-','')
             urls.append({
-                'id':row[0].replace('-',''),
+                'id':idstr,
                 'url':row[1],
                 'title':row[2],
             })
@@ -153,8 +155,10 @@ def urlSerch(selecter,reqBs,reqFs):
         rows = cursor.fetchall()
         print("150")
         for row in rows:
+            print(str(row[0]).replace('-',''))
+            idstr = str(row[0]).replace('-','')
             urls.append({
-                'id':row[0].replace('-',''),
+                'id':idstr,
                 'url':row[1],
                 'title':row[2],
             })
@@ -189,8 +193,10 @@ def urlSerch(selecter,reqBs,reqFs):
         cursor.execute(com)
         rows = cursor.fetchall()
         for row in rows:
+            print(str(row[0]).replace('-',''))
+            idstr = str(row[0]).replace('-','')
             urls.append({
-                'id':row[0].replace('-',''),
+                'id':idstr,
                 'url':row[1],
                 'title':row[2],
             })
