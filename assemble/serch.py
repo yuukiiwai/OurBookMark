@@ -144,7 +144,11 @@ def urlSerch(selecter,reqBs,reqFs):
         '''
         print(com)
         print("146")
-        cursor.execute(com)
+        try :
+            cursor.execute(com)
+        except Exception as e:
+            print("cursor error")
+            print(e)
         print("148")
         rows = cursor.fetchall()
         print("150")
