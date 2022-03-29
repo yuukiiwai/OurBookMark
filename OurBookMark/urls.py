@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from assemble.views import serch
+from .views import my_customized_server_error
+
+handler500 = my_customized_server_error
 
 urlpatterns = [
     path('admin/', admin.site.urls),
