@@ -143,10 +143,11 @@ def urlSerch(selecter,reqBs,reqFs):
         having count(assemble_url.id)>={paralen}
         '''
         print(com)
+        print("146")
         cursor.execute(com)
-        print("147")
+        print("148")
         rows = cursor.fetchall()
-        print("149")
+        print("150")
         for row in rows:
             urls.append({
                 'id':row[0],
