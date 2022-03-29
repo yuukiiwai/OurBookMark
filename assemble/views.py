@@ -34,7 +34,11 @@ def register(request):
         form = URLForm(request.POST)
         if form.is_valid:
             #
-            sel = reg_sel(request.POST['url'],str(request.user.id).replace('-',''))
+            if DEBUG:
+                insuserid = str(request.user.id).replace('-','')
+            else :
+                insuserid = str(request.user.id)
+            sel = reg_sel(request.POST['url'],insuserid)
             print("sel")
             print(sel)
             if sel == 0:
@@ -168,7 +172,7 @@ def detail(request,url_id):
 def serch(request):
     bigTags = BigTag.objects.all()
     furl = URL.objects.all()[:1][0]
-    urls = URL.objects.all()[2:30]
+    urls = URL.objects.all()[1:30]
     idstr = str(request.user.id).replace('-','')
     print(idstr)
     context = {

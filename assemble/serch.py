@@ -52,10 +52,10 @@ def urlSerch(selecter,reqBs,reqFs):
     esconv = EscConvert()
     cursor = connection.cursor()
     if selecter == 0:
-        urlOs = list(URL.objects.all()[2:30].values())
+        urlOs = list(URL.objects.all()[1:30].values())
         for url in urlOs:
             urls.append({
-                'id':url["id"].replace('-',''),
+                'id':url["id"],
                 'url':url["url"],
                 'title':url["title"],
             })
