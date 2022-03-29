@@ -147,6 +147,8 @@ def detail(request,url_id):
         compare = str(request.user.id).replace("-","")
     else :
         compare = str(request.user.id)
+    print(registersid)
+    print(compare)
     if compare in registersid:
         administer = True
     if administer == True:
