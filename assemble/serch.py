@@ -82,7 +82,7 @@ def urlSerch(selecter,reqBs,reqFs):
         paralenF=len(reqFs_set)
         whstrF="where"
         for reqf in reqFs_set:
-            whstrF = whstrF+f'(assemble_finetag.tag="{reqf[0]}" AND assemble_bigtag.tag="{reqf[1]}") OR '
+            whstrF = whstrF+f"(assemble_finetag.tag='{reqf[0]}' AND assemble_bigtag.tag='{reqf[1]}') OR "
         whstrF = whstrF[:-3]
         com = f'''
         select urlbyf.* from 
@@ -206,7 +206,7 @@ def finetagSerch(reqBs):
         reqBs_set.add(reqb_ped)
     whstr = "("
     for req in reqBs_set:
-        whstr = whstr + f'"{req}",'
+        whstr = whstr + f"'{req}',"
     whstr = whstr[:-1] + ")"
 
     com = f'''
@@ -244,7 +244,7 @@ def finetagSend(reqBs,sendF):
         reqBs_set.add(reqb_ped)
     whstr = "("
     for req in reqBs_set:
-        whstr = whstr + f'"{req}",'
+        whstr = whstr + f"'{req}',"
     whstr = whstr[:-1] + ")"
 
     com = f'''
@@ -307,7 +307,7 @@ def whereMake(reqSet,tagkind):
     paralen = len(reqSet)
     whstr = f"where assemble_{tagkind}.tag in("
     for req in reqSet:
-        whstr = whstr+f'"{req}",'
+        whstr = whstr+f"'{req},'"
     whstr = whstr[:-1]+")"
     # ここまで
 
