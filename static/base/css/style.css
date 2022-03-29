@@ -1,0 +1,14 @@
+footer{
+    position:absolute;
+    bottom:0;
+    width: 100%;
+    color: rgb(196, 196, 196);
+    background-color: #0f0f0f;
+}
+main{
+    position: relative;
+    padding-bottom: 160px;
+}
+.foot_a{
+    color: #ffffff;
+}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block main %}
+<div id="forms">
+    <h4>クリックするとグーグルフォームが開きます</h4>
+    <ul>
+        <li><a href="https://forms.gle/BMYfp8fGKGNXjNro6">概要タグの追加申請</a></li>
+        <li><a href="https://forms.gle/v4rKG2w16eQDBVqQA">詳細タグの追加申請</a></li>
+        <li><a href="https://forms.gle/Djvjwhsagy4P3LXw6">その他要望</a></li>
+    </ul>
+</div>
+<div id="experiment">
+    <h2>説明</h2>
+    <h4>概要タグとは</h4>
+    <p>「〇〇学」などの常時展開されるボタン</p>
+    <h4>詳細タグとは</h4>
+    <p>概要タグをクリックしたときに出てくるボタン</p>
+    <h3 style="color: red;">説明画像作成中乞うご期待！！</h3>
+</div>
+{% endblock %}

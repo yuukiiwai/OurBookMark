@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path,include
 from assemble.views import serch
 #from .views import my_customized_server_error
+from .views import request
 
 #handler500 = my_customized_server_error
 
@@ -25,4 +26,5 @@ urlpatterns = [
     path('',serch,name='top'),
     path('assemble/',include('assemble.urls')),
     path('accounts/',include('accounts.urls')),
+    path('request',request,name='request'),
 ]
