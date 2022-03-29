@@ -307,7 +307,7 @@ def whereMake(reqSet,tagkind):
     paralen = len(reqSet)
     whstr = f"where assemble_{tagkind}.tag in("
     for req in reqSet:
-        whstr = whstr+f"'{req},'"
+        whstr = whstr+f"'{req}',"
     whstr = whstr[:-1]+")"
     # ここまで
 
