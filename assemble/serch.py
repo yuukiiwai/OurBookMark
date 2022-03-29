@@ -52,10 +52,10 @@ def urlSerch(selecter,reqBs,reqFs):
     esconv = EscConvert()
     cursor = connection.cursor()
     if selecter == 0:
-        urlOs = list(URL.objects.all()[:30].values())
+        urlOs = list(URL.objects.all()[2:30].values())
         for url in urlOs:
             urls.append({
-                'id':url["id"],
+                'id':url["id"].replace('-',''),
                 'url':url["url"],
                 'title':url["title"],
             })
@@ -118,7 +118,7 @@ def urlSerch(selecter,reqBs,reqFs):
         rows = cursor.fetchall()
         for row in rows:
             urls.append({
-                'id':row[0],
+                'id':row[0].replace('-',''),
                 'url':row[1],
                 'title':row[2],
             })
@@ -154,7 +154,7 @@ def urlSerch(selecter,reqBs,reqFs):
         print("150")
         for row in rows:
             urls.append({
-                'id':row[0],
+                'id':row[0].replace('-',''),
                 'url':row[1],
                 'title':row[2],
             })
@@ -190,7 +190,7 @@ def urlSerch(selecter,reqBs,reqFs):
         rows = cursor.fetchall()
         for row in rows:
             urls.append({
-                'id':row[0],
+                'id':row[0].replace('-',''),
                 'url':row[1],
                 'title':row[2],
             })

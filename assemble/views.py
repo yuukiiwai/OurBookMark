@@ -1,3 +1,4 @@
+from distutils.debug import DEBUG
 import re
 from django.db import connection
 from django.shortcuts import get_object_or_404, redirect, render
@@ -79,7 +80,10 @@ def detail(request,url_id):
     """
     cursor = connection.cursor()
     url = get_object_or_404(URL,id=url_id)
-    url_id_str = str(url_id).replace("-","")
+    if DEBUG:
+        url_id_str = str(url_id).replace("-","")
+    else:
+        url_id_str = str(url_id)
     bcom = f'''
     select assemble_bigtag.tag 
     from assemble_url 
@@ -135,7 +139,11 @@ def detail(request,url_id):
     
     
     administer = False
-    if str(request.user.id).replace("-","") in registersid:
+    if DEBUG:
+        compare = str(request.user.id).replace("-","")
+    else :
+        compare = str(request.user.id)
+    if compare in registersid:
         administer = True
     if administer == True:
         fineTags = finetagSend(btag,ftag)
@@ -160,7 +168,7 @@ def detail(request,url_id):
 def serch(request):
     bigTags = BigTag.objects.all()
     furl = URL.objects.all()[:1][0]
-    urls = URL.objects.all()[:30]
+    urls = URL.objects.all()[2:30]
     idstr = str(request.user.id).replace('-','')
     print(idstr)
     context = {
