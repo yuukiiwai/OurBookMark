@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block main %}
+    {% if pushErr %}
+    <nav class="navbar navbar-expand flex-md-row navbar-dark bg-danger text-light">お、スパムか？</nav>
+    {% endif %}
+    <h2>登録</h2>
+    <form method = "POST">
+        {% csrf_token %}
+        {% bootstrap_form form%}
+        {% bootstrap_button button_type="submit" content="保存" %}
+    </form>
+{% endblock %}

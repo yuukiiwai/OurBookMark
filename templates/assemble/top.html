@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block main %}
+
+<div class="d-flex flex-nowrap">
+    {% for bigtag in bigTags %}
+    <a href="{% url 'assemble:serch' %}?btag={{bigtag.tag}}">
+    <div class="p-2 border bg-opacity-75 bg-primary bg-gradient text-light">{{bigtag.tag}}</div>
+    </a>
+    {% endfor %}
+</div>
+<a href="{% url 'assemble:serch' %}">検索</a>
+<hr>
+<a href="{% url 'assemble:new' %}">投稿する</a>
+<hr>
+<table>
+    {% for url in urls %}
+        <tr>
+            <td><a href="{% url 'assemble:detail' url.id %}">{{url.title}}</a></td>
+            <td><span title="マウスの真ん中クリック推奨"><a href="{{ url.url }}">このページに飛ぶ</a></span></td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

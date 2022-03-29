@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block extraheader %}
+
+{% endblock %}
+{% block main %}
+{% for bigtag in bigTags %}
+    <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="button" onclick="getSerch(this)" name="B" value="{{bigtag.tag}}">{{bigtag.tag}}</button>
+{% endfor %}
+<hr>
+<div id="finetag_table"></div>
+<hr>
+<ul id="url_table">
+    {% for url in urls %}
+        <li>
+            <a href="{{ url.url }}">{{url.title}}</a>
+            <a href="{% url 'assemble:detail' url.id %}">ここの評価ページに飛ぶ</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+{% block extrascript %}
+<script>
+    let pushed = [];
+    let newpushe;
+    let deletednonpush;
+    const el_hr = document.createElement("hr");
+    function callChanges(params) {
+        if(params.name=="B"){
+            Bchange(params);
+        }else if(params.name=="F"){
+            Fchange(params);
+        }
+    }
+    function Fchange(params) {
+        if(params.getAttribute("aria-pressed")=="true"){
+            newpushe={
+                tag:params.name,
+                name:params.value,
+                parent:params.getAttribute("parent"),
+            }
+            pushed.push(newpushe);
+        }else{
+            /* 
+            Ftagをpushedから削除
+            */
+            deletednonpush = pushed.filter((item,index)=>{
+                if(item.tag == "F" && item.name == params.value){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            });
+            pushed = deletednonpush;
+        }
+    }
+    function Bchange(params) {
+        if(params.getAttribute("aria-pressed")=="true"){
+            newpushe={
+                tag:params.name,
+                name:params.value,
+            }
+            pushed.push(newpushe);
+        }else{
+            /* 
+            Btagをpushedから削除
+            配下のFtagもpushedから削除
+            */
+            deletednonpush = pushed.filter((item,index)=>{
+                if(item.tag == "B" && item.name == params.value){
+                    return false;
+                }else if (item.tag == "F" && item.parent == params.value){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            });
+            pushed = deletednonpush;
+        }
+        
+    }
+
+    async function getSerch(parms) {
+        callChanges(parms)
+        fetch("{% url 'assemble:serchapi' %}",{
+        method :'POST',
+        body:JSON.stringify(pushed),
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'X-CSRFToken': '{{csrf_token}}',
+            },
+        }).then(function (res) {
+            return res.json();
+        }).then(function (res) {
+            const urltable = document.getElementById("url_table");
+            // URL更新
+            while(urltable.firstChild){
+                // URL全部消す
+                urltable.removeChild(urltable.firstChild);
+            }
+            const urls = res['urls'];
+            for(let i = 0; i<urls.length;i++){
+                // URL属性付け
+                var newli = document.createElement("li");
+                var newa = document.createElement("a");
+                newa.setAttribute("href",urls[i]["url"]);
+                // newa.setAttribute("url_id",urls[i]["id"]);
+                newa.innerText=urls[i]["title"];
+                newa.setAttribute("target","_blank");
+                newa.setAttribute("rel","noopener noreferrer");
+                newli.appendChild(newa);
+                var newid = document.createElement("a");
+                let eight = urls[i]["id"].slice(0,8);
+                let four1 = urls[i]["id"].slice(8,12);
+                let four2 = urls[i]["id"].slice(12,16);
+                let four3 = urls[i]["id"].slice(16,20);
+                let last = urls[i]["id"].slice(20);
+                let idrepurl = "{% url 'assemble:detail' furl.id %}".replace(/{{furl.id}}/,(eight+"-"+four1+"-"+four2+"-"+four3+"-"+last));
+                newid.setAttribute("href",idrepurl);
+                newid.innerText="ここの評価ページに飛ぶ";
+                newli.appendChild(newid);
+                urltable.appendChild(newli);
+            }
+            // FineTag更新
+            const finetagtable = document.getElementById("finetag_table");
+            let finetagchild_num = finetagtable.children.length;
+            let exist_finetag = [];
+            while(finetagtable.hasChildNodes()){
+                //クリックされているFineTagを記録
+                if(finetagtable.firstChild.getAttribute("aria-pressed")=="true"){
+                    exist_finetag.push({
+                        "tag":finetagtable.firstChild.getAttribute("name"),
+                        "name":finetagtable.firstChild.getAttribute("value"),
+                        "parent":finetagtable.firstChild.getAttribute("parent")
+                    });
+                }
+                //一旦全消し
+                finetagtable.removeChild(finetagtable.firstChild);
+            }
+            /* console.log("exist_finetag");
+            console.log(exist_finetag); */
+            const finetags = res['finetags'];
+            
+            // FineTagの再構成
+            let anewfinetag;
+            for(var i = 0;i<finetags.length;i++){//ここから下同一parent
+                // console.log("i=" + i);
+                var newparent = document.createElement("div");
+                newparent.innerText = finetags[i].parent;
+                finetagtable.appendChild(newparent);
+                
+                for (var j = 0; j < finetags[i].childlen.length;j++){
+                    // console.log("j=" + j);
+                    anewfinetag = {
+                        "tag":"F",
+                        "name":finetags[i].childlen[j],
+                        "parent":finetags[i].parent
+                    }
+                    /* FineTagのボタン作成 */
+                    var newbutton = document.createElement("button");
+                    newbutton.setAttribute("type","button");
+                    newbutton.classList.add("btn");
+                    newbutton.classList.add("btn-outline-secondary");
+                    newbutton.setAttribute("data-bs-toggle","button");
+                    newbutton.setAttribute("onclick","getSerch(this)");
+                    newbutton.setAttribute("name","F");
+                    newbutton.setAttribute("value",anewfinetag.name);
+                    newbutton.setAttribute("style","margin-left: 5px;");
+                    newbutton.setAttribute("parent",anewfinetag.parent);
+                    newbutton.innerText = anewfinetag.name;
+                    
+                    // 押されていたら属性追加
+                    for(var k = 0;k < exist_finetag.length;k++){
+                        // console.log("k=" + k);
+                        if(JSON.stringify(exist_finetag[k]) == JSON.stringify(anewfinetag)){
+                            newbutton.classList.add("active");
+                            newbutton.setAttribute("aria-pressed","true");
+                            break;
+                        }
+                    }
+                    // Childに追加
+                    finetagtable.appendChild(newbutton);
+                }
+            }
+            exist_finetag = []
+        });
+    }
+</script>
+{% endblock %}

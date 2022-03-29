@@ -1,0 +1,1 @@
+web: gunicorn OurBookMark.wsgi --log-file -

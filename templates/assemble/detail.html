@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block main %}
+<h1>URL情報</h1>
+<table>
+    <tr>
+        <th>URL</th>
+        <td><a href="{{ url.url }}">{{ url.url }}</a></td>
+    </tr>
+    <tr>
+        <th>タイトル</th>
+        <td>{{url.title}}</td>
+    </tr>
+    <tr>
+        <th>投稿者</th>
+        {% for user in registers%}
+            <td>{{user}}</td>
+        {% endfor %}
+    </tr>
+</table>
+<table>
+    <tr>
+        <th>概要タグ</th>
+        {% for tag in btag%}
+            <td>{{tag}},</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>詳細タグ</th>
+        {% for tag in ftag%}
+            <td>{{tag.parent}}-{{tag.tag}},</td>
+        {% endfor %}
+    </tr>
+</table>
+<hr>
+{% if admin%}
+    <h2>タグ修正
+        <button type="button" class="btn btn-primary" onclick="save()">保存</button>
+    </h2>
+    <div id="bigtag_table">
+        <p>大カテゴリ</p>
+        {% for bigtag in bigTags %}
+            {% if bigtag.tag in btag %}
+                <button type="button" class="btn btn-outline-secondary active"  data-bs-toggle="button" onclick="dispTagCange(this)" name="B" value="{{bigtag.tag}}" aria-pressed="true">{{bigtag.tag}}</button>
+            {% else %}
+                <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="button" name="B" onclick="dispTagCange(this)" value="{{bigtag.tag}}">{{bigtag.tag}}</button>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div id="finetag_table">
+        {% for aparent in fineTags %}
+            <div id="fine_{{aparent.parent}}">
+                <p>{{aparent.parent}}</p>
+                {% for finetag in aparent.childlen %}
+                    {% if finetag.1 %}
+                        <button type="button" class="btn btn-outline-secondary active"  data-bs-toggle="button" parent="{{aparent.parent}}" name="F" value="{{finetag.0}}" aria-pressed="true">{{finetag.0}}</button>
+                    {% else %}
+                        <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="button" parent="{{aparent.parent}}" name="F" value="{{finetag.0}}">{{finetag.0}}</button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}
+{% block extrascript %}
+{% if admin %}
+<script>
+    let nowpushB = "";
+    const finetagtable = document.getElementById("finetag_table");
+    const bigtagtable = document.getElementById("bigtag_table");
+    let pushedBp=[];
+    let pushedFp=[];
+    function confirm() {
+        let pushedB=[];
+        let pushedF=[];
+        let pushstrB = JSON.stringify(pushedB);
+        let pushstrF = JSON.stringify(pushedF);
+        for(let i = 0;i<bigtagtable.childElementCount;i++){
+            let bele = bigtagtable.children[i];
+            if(bele.getAttribute("aria-pressed") == "true" && (pushstrB.indexOf('"'+ bele.innerText +'"') == -1)){
+                pushedB.push(bele.innerText);
+            }
+        }
+        for(let i = 0 ; i < finetagtable.childElementCount; i++){
+            let fele = finetagtable.children[i];
+            let fine_buttons = fele.getElementsByTagName("button");
+            for ( let button_num = 0 ; button_num < fine_buttons.length; button_num++){
+                let abutton = fine_buttons[button_num];
+                if(abutton.getAttribute("aria-pressed") == "true" && (pushstrF.indexOf('"'+ abutton.innerText +'"') == -1)){
+                    pushedF.push({
+                        "tagname":abutton.innerText,
+                        "parent":abutton.getAttribute("parent"),
+                    });
+                }
+            }
+        }
+        return [pushedB,pushedF];
+    }
+
+    async function dispTagCange(params){
+        if(params.getAttribute("aria-pressed")=="true"){
+            nowpushB = params.value;
+            fetch("{% url 'assemble:tagDapi' %}",{
+                method:'POST',
+                body:JSON.stringify(params.value),
+                headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'X-CSRFToken': '{{csrf_token}}',
+                },
+            }).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                const newparentdiv = document.createElement("div");
+                newparentdiv.setAttribute("id","fine_"+nowpushB);
+                const parentp=document.createElement("p");
+                parentp.innerText = nowpushB;
+                newparentdiv.appendChild(parentp);
+                const newtags = res["finetags"];
+                for(let i = 0;i<newtags.length;i++){
+                    let newtag = document.createElement("button");
+                    newtag.setAttribute("type","button");
+                    newtag.classList.add("btn");
+                    newtag.classList.add("btn-outline-secondary");
+                    newtag.setAttribute("data-bs-toggle","button");
+                    newtag.setAttribute("parent",nowpushB);
+                    newtag.setAttribute("name","F");
+                    newtag.setAttribute("value",newtags[i]);
+                    newtag.innerText = newtags[i];
+                    newparentdiv.appendChild(newtag);
+                }
+                finetagtable.appendChild(newparentdiv);
+            });
+        }else{
+            /* console.log(finetag_table); */
+            let parents = document.getElementById("fine_"+params.value);
+            parents.remove();
+        }
+    }
+
+    async function save(params) {
+        const oldB = JSON.parse(JSON.stringify(pushedBp));
+        const oldF = JSON.parse(JSON.stringify(pushedFp));
+        const pushednew = confirm();
+        const newB = pushednew[0];
+        const newF = pushednew[1];
+        let addB=[],addF=[],delB=[],delF=[];
+        
+        for(let i=0 ; i<oldB.length; i++){
+            if(!newB.includes(oldB[i])){
+                delB.push(oldB[i]);
+            }
+        }
+        for(let i=0 ; i<newB.length; i++){
+            if(!oldB.includes(newB[i])){
+                addB.push(newB[i]);
+            }
+        }
+        for(let i=0 ; i<oldF.length; i++){
+            let ofstr = JSON.stringify(oldF[i]);
+            let diff = true;
+            for(let j = 0;j<newF.length;j++){
+                let nfstr = JSON.stringify(newF[j]);
+                if(ofstr==nfstr){
+                    diff = false;
+                    break;
+                }
+            }
+            if(diff){
+                delF.push(oldF[i]);
+            }
+        }
+        for(let i=0 ; i<newF.length; i++){
+            let nfstr = JSON.stringify(newF[i]);
+            let diff = true;
+            for(let j = 0;j<oldF.length;j++){
+                let ofstr = JSON.stringify(oldF[j]);
+                if(nfstr==ofstr){
+                    diff = false;
+                    break;
+                }
+            }
+            if(diff){
+                addF.push(newF[i]);
+            }
+        }
+        pushedBp = JSON.parse(JSON.stringify(newB));
+        pushedFp = JSON.parse(JSON.stringify(newF));
+        const saveTag={
+            "id":"{{url.id}}",
+            "add":{
+                "B":addB,
+                "F":addF
+            },
+            "del":{
+                "B":delB,
+                "F":delF
+            }
+        }
+        console.log(saveTag);
+        console.log(JSON.stringify(saveTag));
+        fetch("{% url 'assemble:tagSaveApi' %}",{
+                method:'POST',
+                body:JSON.stringify(saveTag),
+                headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'X-CSRFToken': '{{csrf_token}}',
+                },
+            }).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                if(res.hello == "HELLO"){
+                    alert("success!");
+                }else{
+                    alert("failed!");
+                }
+                
+            })
+    }
+
+    const one = confirm();
+    pushedBp = one[0];
+    pushedFp = one[1];
+</script>
+{% endif %}
+{% endblock %}
