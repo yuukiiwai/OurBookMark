@@ -139,8 +139,7 @@ def detail(request,url_id):
     rows = cursor.fetchall()
     for row in rows:
         registers.append(row[0])
-        registersid.append(row[1])
-    
+        registersid.append(str(row[1]))
     
     administer = False
     if DEBUG:
