@@ -186,7 +186,7 @@ def urlSerch(selecter,reqBs,reqFs):
                 'url':row[1],
                 'title':row[2],
             })
-
+    print(urls)
     return urls
 
 def finetagSerch(reqBs):

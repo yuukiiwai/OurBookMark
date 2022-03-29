@@ -182,6 +182,7 @@ def serchprocess(request):
         reqFs = conv_data["reqFs"]
 
         urls = urlSerch(selecter=sel,reqBs=reqBs,reqFs=reqFs)
+        print(urls)
         if len(reqBs) != 0: 
             finetags = finetagSerch(reqBs=reqBs)
         context = {
