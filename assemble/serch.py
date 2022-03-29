@@ -144,13 +144,16 @@ def urlSerch(selecter,reqBs,reqFs):
         '''
         print(com)
         cursor.execute(com)
+        print("147")
         rows = cursor.fetchall()
+        print("149")
         for row in rows:
             urls.append({
                 'id':row[0],
                 'url':row[1],
                 'title':row[2],
             })
+        print("156")
     elif selecter == 3:
         """
         Ftagについてくるデータはtag文字列データとparent_idデータ
