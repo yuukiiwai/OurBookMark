@@ -2,7 +2,9 @@
 {% load django_bootstrap5 %}
 {% block main %}
 <h2>会員登録</h2>
-<p><a href="{% url 'terms' %}">利用規約</a>に同意して会員登録をします。</p>
+<p><a href="{% url 'terms' %}">利用規約</a>および<a href="{% url 'privacy' %}">プライバシーポリシー</a>に同意して会員登録をします。</p>
+<p>username（ユーザー名）は公開される情報です。</p>
+<p>Emailアドレスは公開されません。</p>
 <form method="POST">
     {% csrf_token %}
     {% bootstrap_form form %}

@@ -16,3 +16,6 @@ def signup(request):
 
 def terms(request):
     return render(request,'accounts/riyokiyaku.html')
+
+def privacy(request):
+    return render(request,'accounts/privacy.html')
