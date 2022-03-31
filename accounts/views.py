@@ -13,3 +13,6 @@ def signup(request):
         form = SignUpForm()
 
     return render(request,'accounts/signup.html',{'form':form})
+
+def terms(request):
+    return render(request,'accounts/riyokiyaku.html')

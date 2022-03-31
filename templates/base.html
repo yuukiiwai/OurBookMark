@@ -29,6 +29,7 @@
                 {% block main %}{% endblock %}
             </div>
         </main>
+        {% block exfooter %}
         <footer class="footer py-3">
             <div class="container">
                 <p>©︎2022 yuuki</p>
@@ -37,6 +38,7 @@
                 <a href="{% url 'request' %}" class="foot_a">要望はこちら</a>
             </div>
         </footer>
+        {% endblock %}
         {% block extrascript %}
         {% endblock %}
     </body>

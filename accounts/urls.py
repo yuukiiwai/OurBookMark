@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView,LogoutView
 from django.urls import path
 from django.views.generic import CreateView
-from .views import signup
+from .views import signup,terms
 
 urlpatterns = [
     path('signup/',signup,name='signup'),
@@ -11,4 +11,5 @@ urlpatterns = [
         template_name='accounts/login.html'
     ),name='login'),
     path('logout/',LogoutView.as_view(),name='logout'),
+    path('terms/',terms,name='terms'),
 ]
