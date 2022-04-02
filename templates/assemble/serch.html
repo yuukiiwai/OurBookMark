@@ -4,23 +4,28 @@
 
 {% endblock %}
 {% block main %}
-{% for bigtag in bigTags %}
-    <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="button" onclick="getSerch(this)" name="B" value="{{bigtag.tag}}">{{bigtag.tag}}</button>
-{% endfor %}
+<p id="first" style="color: red; font-size: larger;"><b>↓↓ボタンをクリックして検索をスタート</b></p>
+<p style="font-size: large;">概要タグ</p>
+<div id="bigtag_table">
+    {% for bigtag in bigTags %}
+        <button type="button" class="btn btn-outline-secondary"  data-bs-toggle="button" onclick="getSerch_f(this)" name="B" value="{{bigtag.tag}}">{{bigtag.tag}}</button>
+    {% endfor %}
+</div>
 <hr>
+<p style="font-size: large;">詳細タグ</p>
 <div id="finetag_table"></div>
 <hr>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
-            <th scope="col">評価ページ</th>
+            <th scope="col" style="width: 10%;">評価ページ</th>
             <th scope="col">該当ページ</th>
         </tr>
     </thead>
     <tbody id="url_table">
         {% for url in urls %}
         <tr>
-            <th style="width: 10%;" scope="row"><a href="{% url 'assemble:detail' url.id %}">≡・ω・≡</a></th>
+            <th scope="row"><a href="{% url 'assemble:detail' url.id %}">≡・ω・≡</a></th>
             <th><a href="{{url.url}}">{{url.title}}</a></th>
         </tr>
         {% endfor %}
@@ -206,6 +211,20 @@
             }
             exist_finetag = []
         });
+    }
+</script>
+<script id="firstjs">
+    async function getSerch_f(params){
+        const fmes = document.getElementById("first");
+        const bigtagtable = document.getElementById("bigtag_table");
+        for(let i = 0;i<bigtagtable.childElementCount;i++){
+            const abigtag = bigtagtable.children[i];
+            abigtag.setAttribute("onclick","getSerch(this)");
+        }
+        getSerch(params);
+        fmes.remove();
+        const thisscr = document.getElementById("firstjs");
+        thisscr.remove();
     }
 </script>
 {% endblock %}
